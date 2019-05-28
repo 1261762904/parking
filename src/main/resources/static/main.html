@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>学生</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Bootstrap core CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	<!-- axios -->
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<!-- Vue -->
+	<script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+	<script src="https://cdn.bootcss.com/vue-router/2.7.0/vue-router.min.js"></script>
+	<!-- toastr -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+	<script src="http://i.gtimg.cn/qzone/biz/gdt/lib/jquery/jquery-2.1.4.js?max_age=31536000"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>	
+	<!-- animate -->
+	<link href="https://cdn.jsdelivr.net/npm/animate.css@3.5.1" rel="stylesheet" type="text/css">
+	<!-- echarts -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.2.1/echarts-en.common.js"></script>
+	<!-- Custom styles -->
+	<link href="./css/product.css" rel="stylesheet">
+	<link href="./css/carousel.css" rel="stylesheet">
+
+</head>
+
+<body>
+	<div id="parking">
+		<cnav :p=info></cnav>
+		<router-view></router-view>
+		<cfooter></cfooter>
+	</div>
+
+	<script>
+		  toastr.options = {
+            closeButton: true, // 是否显示关闭按钮，（提示框右上角关闭按钮）
+            //debug: false, // 是否使用deBug模式
+            progressBar: false, // 是否显示进度条，（设置关闭的超时时间进度条）
+            positionClass: "toast-top-center", // 设置提示款显示的位置
+            onclick: null, // 点击消息框自定义事件 
+            showDuration: "300", // 显示动画的时间
+            hideDuration: "1000", //  消失的动画时间
+            timeOut: "1500", //  自动关闭超时时间 
+            extendedTimeOut: "1000", //  加长展示时间
+            showEasing: "swing", //  显示时的动画缓冲方式
+            hideEasing: "linear", //   消失时的动画缓冲方式
+            showMethod: "fadeIn", //   显示时的动画方式
+            hideMethod: "fadeOut" //   消失时的动画方式
+        };
+		//nav
+		Vue.component('cnav', {
+			props: ["p"],
+			methods:{
+				exit(){
+					axios.get("/parking/clear")
+					.then((resp) => { window.location = '/index.html'
+				 })
+					.catch((resp) => { console.log("失败") })
+				}
+			},
+			template: `
+			<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+			<a class="navbar-brand" href="#"><img
+				src="./images/logo.png" width="200" height="60"
+				class="d-inline-block align-top" alt="#"></a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+					<li class="nav-item mr-2"><a class="nav-link text-dark" href="#">首页</a></li>
+					<li class="nav-item mr-2"><a class="nav-link text-dark"
+						href="main.html#/personInfo">个人信息</a></li>
+						<li class="nav-item mr-2"><a class="nav-link text-dark"
+						href="main.html#/driverInfo">车主信息</a></li>
+					<li class="nav-item mr-2"><a class="nav-link text-dark"
+						href="main.html#/parkingInfo">停车场信息</a></li>
+					<li class="nav-item mr-2"><a class="nav-link text-dark"
+						href="main.html#/parkingRecord">停车记录</a></li>
+					<li class="nav-item mr-2"><a class="nav-link text-dark"
+						href="main.html#/simulatedParking">模拟停车</a></li>
+					<li class="nav-item mr-2" ><a class="nav-link text-dark"
+						href="main.html#/dataAnalysis">数据可视化分析</a></li>
+					<li class="nav-item mr-2" v-if="p.aRole=='超级管理员'"><a class="nav-link text-dark"
+						href="main.html#/adminInfo">管理员信息</a></li>
+				</ul>
+				<a class="text-dark "  href="javascript:void(0);" @click="exit">{{p.aName}}({{p.aId}})，退出</a>
+			</div>
+		</nav>
+		`
+		})
+
+		//footer
+		Vue.component('cfooter', {
+			template: `
+			<div class="container-fluid   border border-white">
+				
+			<footer class="pt-4  pt-md-5 border-top">
+				<div class="row">
+					<div class="col-12 col-md offset-md-1">
+						<img class="mb-2" src="./images/foot2.png" alt="">
+						<small class="d-block mb-3 text-muted">&copy; 易氏集团公众号</small>
+					</div>
+					<div class="col-6 col-md">
+						<ul class="list-unstyled text-small">
+							<li><a class="text-muted">地址：湖南省长沙市韶山南路498号</a></li>
+							<li><a class="text-muted"> 邮编：410004</a></li>
+							<li><a class="text-muted">电话：0731-85623096</a></li>
+						</ul>
+					</div>
+					<div class="col-6 col-md">
+						<ul class="list-unstyled text-small">
+							<li><a class="text-muted">易氏集团版权所有</a></li>
+							<li><a class="text-muted">湘ICP备09017705号</a></li>
+						</ul>
+					</div>
+				</div>
+			</footer>
+		</div>
+		`
+		})
+
+		//首页组件
+		let main = Vue.component("main", {
+			data: function () {
+				return {
+				}
+			},
+			methods:{
+			},
+			mounted(){
+				this.temp=true;
+			},
+			template: `
+			
+		<div>
+			<div class="bd-example">
+  <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+      <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+      <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="./images/main1.png" class="d-block w-100" alt="...">
+        <div class="carousel-caption d-none d-md-block">
+          <h5>SUPERIOR QUALITY BRINGS PLEASURE</h5>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="./images/main2.png" class="d-block w-100" alt="...">
+        <div class="carousel-caption d-none d-md-block">
+          <h5>INTERNET + SMART PARKING SOLUTIONS</h5>
+        </div>
+      </div>
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleCaptions" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+</div>
+			<img class="w-100" src="./images/main3.png" alt="">
+
+			<div class="bd-example">
+  <div id="carouselExampleCaptions1" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators" style="margin-left: 1000px;">
+      <li data-target="#carouselExampleCaptions1" data-slide-to="0" class="active"></li>
+      <li data-target="#carouselExampleCaptions1" data-slide-to="1"></li>
+    </ol>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="./images/main4.jpg" class="d-block w-100" alt="...">  
+      </div>
+      <div class="carousel-item">
+        <img src="./images/main5.png" class="d-block w-100" alt="...">
+      </div>
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleCaptions1" role="button" data-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleCaptions1" role="button" data-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+</div>
+		
+
+ <div class="container-fluid" >
+
+
+  <!-- Example row of columns -->
+  <div class="row">
+    <div class="col-12 col-md-6 p-3 p-md-5 bg-white border border-white">
+    <!-- Icon by Bytesize https://github.com/danklammer/bytesize-icons -->
+    <svg xmlns="http://www.w3.org/2000/svg" focusable="false" width="32" height="32" fill="none" stroke="currentcolor" stroke-width="2" class="text-primary mb-2" viewBox="0 0 32 32" stroke-linecap="round" stroke-linejoin="round"><title>Import icon</title><path d="M28 22v8H4v-8M16 4v20m-8-8l8 8 8-8"/></svg>
+    <h3>硬件产品解决方案</h3>
+    <p>HARDWARE SOLUTION</p>
+		<hr class="half-rule">
+		<img class="img-fluid mt-3 ml-md-5" src="./images/main6.jpg" alt="Bootstrap Themes" width="600" height="500">
+  </div>
+    
+  <div class="col-12 col-md-6 p-3 p-md-5 bg-white border border-white">
+  <!-- Icon by Bytesize https://github.com/danklammer/bytesize-icons -->
+  <svg xmlns="http://www.w3.org/2000/svg" focusable="false" width="32" height="32" fill="none" stroke="currentcolor" stroke-width="2" class="text-primary mb-2" viewBox="0 0 32 32" stroke-linecap="round" stroke-linejoin="round"><title>Download icon</title><path d="M9 22c-9 1-8-10 0-9C6 2 23 2 22 10c10-3 10 13 1 12m-12 4l5 4 5-4m-5-10v14"/></svg>
+  <h3>软件产品解决方案</h3>
+  <p>SOFTWARE SOLUTION</p>
+	<hr class="half-rule"> 
+	<img class="img-fluid mt-3 ml-md-5" src="./images/main7.jpg" alt="Bootstrap Themes" width="600" height="500">
+</div>
+
+    </div>
+  </div>
+</div> <!-- /container -->
+</div>
+    `});
+
+		//个人信息组件
+		let personInfo = Vue.component('personInfo', {
+			data: function () {
+				return {
+					per: {},
+					prepw: null,
+					newpw: null,
+					againnewpw: null,
+					temp:false,
+					info:"",
+					pert:{}
+				}
+			},
+			methods: {
+				changepw() {
+					if (this.newpw === this.againnewpw&&this.newpw!=null&&this.prepw!=null) {
+						axios.post("/parking/updatepw", {
+							'id': this.per.aId, 'prePassword': this.prepw, 'newPassword': this.newpw
+						})
+							.then((resp) => {
+								if (resp.data) { toastr.success('密码修改成功'); }
+								else { toastr.error('原密码错误');}
+							})
+							.catch((resp) => { console.log("失败") });
+					}
+					else if(this.prepw==null&&this.newpw==null){
+						toastr.warning('不能为空');
+					}
+					else if(this.newpw != this.againnewpw){
+						toastr.warning('两次密码不匹配');
+					}
+					this.prepw=null;
+					this.newpw=null;
+					this.againnewpw=null;
+				},
+				changeinfo() {
+					var result = false;
+        	var express = /^1[34578]\d{9}$/;
+        	result = express.test(this.pert.aPhone);
+					console.log(result);
+					if (result){
+						axios.put("/parking/changeAdminInfo",{
+						'aId':this.pert.aId,'aName':this.pert.aName,'aSex':this.pert.aSex,'aPhone':this.pert.aPhone
+					})
+					.then((resp) => { 	if (resp.data) { toastr.success('修改信息成功'); axios.get("/parking")
+					.then((resp) => { this.per = resp.data; })
+					.catch((resp) => { console.log("失败") })}
+								else { toastr.error('修改信息错误')}})
+					.catch((resp) => { console.log("失败")})
+					}else{
+						toastr.error('请输入正确的电话号码');
+					}
+				},
+				gettempinfo(){
+					axios.get("/parking")
+					.then((resp) => { this.pert = resp.data; })
+					.catch((resp) => { console.log("失败") })
+				}
+			},
+			mounted() {
+				this.temp=true;
+				axios.get("/parking")
+					.then((resp) => { this.per = resp.data; })
+					.catch((resp) => { console.log("失败") })
+			},
+			template: `
+
+			<div class="">
+				<div class="bd-example">
+  <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="./images/ban1.png" class="d-block w-100 " alt="...">
+				
+        <div class="carousel-caption d-none d-md-block" style="
+    margin-bottom: 150px;"
+>
+<div style='background-color:white;height:2px;border:none;width: 365px;margin-left: 405px;'></div>
+					<div style="font-size:70px" class="my-2">个 人 信 息</div>
+					<div style='background-color:white;height:2px;border:none;width: 365px;margin-left: 405px;'></div>
+          <div style="font-size:20px ;" class="mt-4">PERSON INFORMATION</div>
+				<button type="button"  class="btn btn-outline-light mt-3" data-toggle="modal" data-target="#exampleModal1" @click="gettempinfo">
+          修改信息
+        </button>
+				<button type="button"  class="btn btn-outline-light mt-3 ml-2" data-toggle="modal" data-target="#exampleModal">
+          修改密码
+        </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <div class="row mb-5">
+      <div class="col-md-4 order-md-1 mt-5 text-md-left offset-md-4">
+
+        <ul class="pl-md-5 mt-5" >
+					<transition name="custom-classes-transition"enter-active-class="animated zoomInLeft"><img v-if="temp" src="./images/content_5.png" width="60" height="60" alt="" class="rounded mx-auto d-block"></transition>
+					<hr class="featurette-divider ">
+          <li class="list-group-item font-weight-bold " ><transition name="custom-classes-transition"enter-active-class="animated rotateInDownLeft">
+					<img v-if="temp"src="./images/content_1.png" width="30" height="30" class="mr-2"/></transition>账号：{{per.aId}}</li>
+          <li class="list-group-item font-weight-bold ""><transition name="custom-classes-transition"enter-active-class="animated rotateInDownRight">
+					<img v-if="temp"src="./images/content_2.png" width="30" height="30" class="mr-2"/></transition>姓名：{{per.aName}}</li>
+          <li class="list-group-item font-weight-bold "><transition name="custom-classes-transition"enter-active-class="animated rotateInDownLeft">
+					<img v-if="temp"src="./images/content_3.png" width="30" height="30" class="mr-2"/></transition>性别：{{per.aSex}}</li>
+					<li class="list-group-item font-weight-bold "><transition name="custom-classes-transition"enter-active-class="animated rotateInDownRight">
+					<img v-if="temp"src="./images/content_4.png" width="30" height="30" class="mr-2"/></transition>电话：{{per.aPhone}}</li>
+					<li class="list-group-item font-weight-bold " ><transition name="custom-classes-transition"enter-active-class="animated rotateIn">
+					<img v-if="temp"src="./images/content_6.png" width="30" height="30" class="mr-2"></transition>权限：{{per.aRole}}</li>
+        </ul>
+				
+        </div>
+			
+        </div>
+
+        <!-- 修改密码Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">修改密码</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+
+              <div class="form-group">
+              <label for="exampleInputPassword1">原密码：</label>
+              <input type="password" class="form-control"  v-model="prepw">
+            </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">新密码：</label>
+                <input type="password" class="form-control"   v-model="newpw">
+              </div>
+              <div class="form-group">
+              <label for="exampleInputPassword1">再次确认：</label>
+              <input type="password" class="form-control"   v-model="againnewpw">
+            </div>
+              
+              </div>
+              <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">关闭</button>
+              <button type="button" class="btn btn-outline-primary"  @click="changepw" data-dismiss="modal">提交</button>
+            </div>
+            </div>
+          </div>
+				</div>
+
+				<!-- 修改信息Modal -->
+        <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">修改信息</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+
+              <div class="form-group">
+              <label for="exampleInputPassword1">账号：</label>
+              <input type="text" class="form-control"  v-model="pert.aId" disabled="disabled"> 
+            </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">姓名：</label>
+                <input type="text" class="form-control"   v-model="pert.aName">
+              </div>
+							<div class="form-group">
+                <label for="exampleInputPassword1">性别：</label>
+								<select v-model="pert.aSex" class="form-control" id="exampleFormControlSelect1">
+    						<option disabled value="">请选择</option>
+    						<option>男</option>
+								<option>女</option>
+  						</select>
+              </div>
+              <div class="form-group">
+              <label for="exampleInputPassword1">电话：</label>
+              <input type="text" class="form-control"   v-model="pert.aPhone">
+            </div>
+						<div class="form-group">
+              <label for="exampleInputPassword1">权限</label>
+              <input type="text" class="form-control"   v-model="pert.aRole" disabled="disabled">
+            </div>
+              </div>
+              <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">关闭</button>
+              <button type="button" class="btn btn-outline-primary"  @click="changeinfo" data-dismiss="modal">提交</button>
+            </div>
+            </div>
+          </div>
+				</div>
+				<img src="./images/foot1.png" class="img-fluid" alt="Responsive image">
+      </div>
+      `});
+
+		//停车场信息组件
+		let parkingInfo = Vue.component('parkingInfo',{
+			data: function () {
+				return {
+					info:{},
+					animate:false,
+					infotemp:{}
+				}
+			},
+			methods: {
+				submit() {
+					axios.post("/parking/changeParkingInfo",
+						this.infotemp
+					)
+					.then((resp) => { if (resp.data) { toastr.success('修改信息成功');	axios.get("/parking/parkingInfo")
+					.then((resp) => { this.info = resp.data; })
+					.catch((resp) => { console.log("失败") }) }
+								else { toastr.error('修改信息错误');} })
+					.catch((resp) => { console.log("失败") })
+				},
+				temp(){
+					this.animate=true;
+				axios.get("/parking/parkingInfo")
+					.then((resp) => { this.infotemp = resp.data; })
+					.catch((resp) => { console.log("失败") })
+				}
+			},
+			mounted() {
+				this.animate=true;
+				axios.get("/parking/parkingInfo")
+					.then((resp) => { this.info = resp.data; })
+					.catch((resp) => { console.log("失败") })
+			},
+			template: `
+<div class="">
+	<div class="bd-example">
+  <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="./images/ban3.jpg" class="d-block w-100 " alt="...">	
+				<div class="carousel-caption d-none d-md-block" style="
+    margin-bottom: 150px;"
+>
+				<div style='background-color:white;height:2px;border:none;width: 450px;margin-left: 360px;'></div>
+					<div style="font-size:70px" class="my-2">停 车 场 信 息</div>		
+					<div style='background-color:white;height:2px;border:none;width: 450px;margin-left: 360px;'></div>
+          <div style="font-size:20px ;" class="mt-4">PARKING INFORMATION</div>
+					<button type="button" class="btn btn-outline-light mt-3" data-toggle="modal" data-target="#exampleModal" @click="temp">修改信息</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+	
+
+<!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">修改停车场信息</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+
+              <div class="form-group">
+              <label for="exampleInputPassword1">地点：</label>
+              <input type="text" class="form-control"  v-model="infotemp.pAddress">
+            </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">总共车位数量：</label>
+                <input type="text" class="form-control"   v-model="infotemp.pNum">
+							</div>
+							<div class="form-group">
+                <label for="exampleInputPassword1">剩余车位数量：</label>
+                <input type="text" class="form-control"   v-model="infotemp.pRemainNum">
+              </div>
+              <div class="form-group">
+              <label for="exampleInputPassword1">停车费：</label>
+              <input type="text" class="form-control"   v-model="infotemp.pPay">
+            </div>
+              
+              </div>
+              <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+              <button type="button" class="btn btn-primary"  @click="submit" data-dismiss="modal">提交</button>
+            </div>
+            </div>
+          </div>
+				</div>
+
+
+	<div class="d-md-flex flex-md-equal w-100 " >
+  <div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center  overflow-hidden">
+    <div class="my-3 py-3">
+      <h2 class="display-5">{{info.pAddress}}</h2>
+      <p class="lead">湖南省长沙市韶山南路498</p>
+		</div>
+		<transition
+    name="custom-classes-transition"
+    enter-active-class="animated rotateInDownLeft"
+  >
+		<img v-if="animate" src="./images/parkingInfo2.jpeg" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;"/></transition>
+	</div>
+
+
+
+  <div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center  overflow-hidden" >
+    <div class="my-3 p-3">
+      <h2 class="display-5">剩余停车位：{{info.pRemainNum}}</h2>
+      <p class="lead">本停车场总共有{{info.pNum}}停车位</p>
+    </div>
+		<transition
+    name="custom-classes-transition"
+    enter-active-class="animated rotateInDownRight"
+  ><img v-if="animate" src="./images/parkingInfo3.png" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;"/></transition>
+  </div>
+</div>
+
+
+<!-- START THE FEATURETTES -->
+
+<hr class="featurette-divider ">
+
+<div class="row featurette p-1 p-md-3 m-md-3">
+	<div class="col-md-6" style="margin-left:50px">
+		<h2 class="featurette-heading mb-4">收费标准 </h2>
+		<table class="table table-hover">
+  <thead>
+    <tr>
+			<th scope="col">停放时间</th>
+      <th scope="col">计费单元</th>
+      <th scope="col">收费标准</th>
+      <th scope="col">收费依据</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1小时内（含）</th>
+      <td>元/次车位</td>
+      <td>免费</td>
+      <td>长价费函【2019】8号</td>
+    </tr>
+		<tr>
+      <th scope="row">1小时-2小时（含）</th>
+      <td>元/次车位</td>
+      <td>{{info.pPay}}</td>
+      <td>长价费函【2019】8号</td>
+		</tr>
+		<tr>
+      <th scope="row">2小时-10小时（含）</th>
+      <td>元/次车位</td>
+      <td>{{info.pPay*2}}</td>
+      <td>长价费函【2019】8号</td>
+		</tr>
+		<tr>
+      <th scope="row">10小时-24小时</th>
+      <td>元/次车位</td>
+      <td>{{info.pPay*5}}</td>
+      <td>长价费函【2019】8号</td>
+		</tr>
+		<tr>   
+      <td colspan="4" class="text-center">24小时以上按每小时1元递增</td> 
+    </tr>
+  </tbody>
+</table>
+<p class="lead">备注：</p>
+<ul>
+	<li>市物价局 价格举报电话：12304</li>
+	<li>市城管局 管理投诉电话：12305</li>
+	<li>警车、消防车、救护车免费停放</li>
+</ul>
+	</div>
+	<div class="col-md-5 pl-md-5">		  
+			<img src="./images/parkingInfo4.jpeg" class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid " width="400" height="400" style="margin-left:120px"/>
+			</div>
+</div>
+
+</div>
+			`
+		});
+
+		//车主信息组件
+		let driverInfo = Vue.component('diverInfoInfo',{
+			data: function () {
+				return {
+					userInfos:[],
+					oneuserinfo:{},
+					id:undefined,
+					searchinfo:"",
+					adduserinfo:{uName:"",uSex:"",uPhone:"",uLicense:"",uRole:"",uEffectiveTime:undefined},
+					page:undefined,
+					curpage:1,
+					info:undefined
+				}
+			},
+			methods: {
+				getuserinfo(id){
+					axios.get("/parking/userInfo/"+id)
+					.then((resp) => { this.oneuserinfo = resp.data; })
+					.catch((resp) => { console.log("失败") })
+				},
+				submit1(){
+					if(this.oneuserinfo.uRole=='非会员'){
+						this.oneuserinfo.uEffectiveTime=undefined;
+					}
+					var result = false;
+					if(this.oneuserinfo.uLicense==undefined){
+						this.oneuserinfo.uLicense='';
+					}
+      		if (this.oneuserinfo.uLicense.length == 7|this.oneuserinfo.uLicense.length == 8){
+       			var express = /^(WJ[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼]{1})|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼消军A-Z]{1}[A-Z]{1})[A-Z0-9]{4}[A-Z0-9挂学港澳领]{1}$/;
+        		result = express.test(this.oneuserinfo.uLicense);
+						console.log(result);
+						if (result){
+							var res = false;
+        			var exp = /^1[34578]\d{9}$/;
+        			res = exp.test(this.oneuserinfo.uPhone);
+							if (res){
+								axios.put("/parking/userInfo",this.oneuserinfo)
+							.then((resp) => { if (resp.data) { toastr.success('修改信息成功');this.searchinfo="";this.curpage=1; axios.get("/parking/userInfoPage/1")
+							.then((resp) => { this.userInfos = resp.data; })
+							.catch((resp) => { console.log("失败") })}
+							else { toastr.error('修改信息错误');}  })
+						.catch((resp) => { toastr.error('请填写正确日期'); })
+							}else{
+								toastr.error('请输入正确的电话号码');
+							}
+						}else{
+							toastr.error('请输入正确的车牌');
+						}
+      		}else{
+						toastr.error('请输入正确的车牌');
+	  			}	
+					
+				},
+				deletetemp(id){
+					this.id=id;
+				},
+				submit2(){
+					axios.delete("/parking/userInfo/"+this.id)
+					.then((resp) => { if (resp.data) { toastr.success('删除信息成功'); this.curpage=1;this.searchinfo=""; 
+					axios.get("/parking/userInfoPage")
+					.then((resp) => { this.page = resp.data; })
+					.catch((resp) => { console.log("失败") });
+					axios.get("/parking/userInfoPage/1")
+					.then((resp) => { this.userInfos = resp.data; })
+					.catch((resp) => { console.log("失败") })}
+								else { toastr.error('删除信息错误，请先将停车记录中的信息删除！');}  })
+					.catch((resp) => { toastr.error('删除信息错误，请先将停车记录中的信息删除！'); })
+				},
+				search(){
+					if(this.searchinfo==""){
+						axios.get("/parking/userInfoPage/1")
+					.then((resp) => { this.userInfos = resp.data; 	axios.get("/parking/userInfoPage")
+					.then((resp) => { this.page = resp.data; })
+					.catch((resp) => { console.log("失败") });})
+					.catch((resp) => { console.log("失败") });
+					}else{
+						axios.get("/parking/finduserInfo?searchinfo="+this.searchinfo+"&page="+1)
+					.then((resp) => { this.userInfos = resp.data; 	axios.get("/parking/userInfoPageBC/"+this.searchinfo)
+					.then((resp) => { this.page = resp.data; })
+					.catch((resp) => { console.log("失败") });})
+					.catch((resp) => { console.log("失败") });
+					}
+					this.curpage=1
+				},
+				addinfo(){
+					if(this.adduserinfo.uRole=='非会员'){
+						this.adduserinfo.uEffectiveTime=undefined;
+					}
+
+					var result = false;
+      		if (this.adduserinfo.uLicense.length == 7|this.adduserinfo.uLicense.length == 8){
+       			var express = /^(WJ[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼]{1})|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼消军A-Z]{1}[A-Z]{1})[A-Z0-9]{4}[A-Z0-9挂学港澳领]{1}$/;
+        		result = express.test(this.adduserinfo.uLicense);
+						console.log(result);
+						if (result){
+							axios.post("/parking/userInfo",this.adduserinfo)
+					.then((resp) => { if (resp.data) { toastr.success('添加信息成功'); this.searchinfo=""; this.adduserinfo='';		this.curpage=1;
+					axios.get("/parking/userInfoPage")
+					.then((resp) => { this.page = resp.data; })
+					.catch((resp) => { console.log("失败") });
+					axios.get("/parking/userInfoPage/1")
+					.then((resp) => { this.userInfos = resp.data; })
+					.catch((resp) => { console.log("失败") })}
+								else { toastr.error('添加信息错误');}  })
+					.catch((resp) => { toastr.error('请填写正确的日期'); })
+						}else{
+							toastr.error('请输入正确的车牌');
+						}
+      		}else{
+						toastr.error('请输入正确的车牌');
+	  			}	
+
+
+
+				},
+				jump(page){
+					if(this.searchinfo==""){
+						axios.get("/parking/userInfoPage/"+page)
+					.then((resp) => { this.userInfos = resp.data;})
+					.catch((resp) => { toastr.error('跳转失败'); });
+					}else{
+						axios.get("/parking/finduserInfo?searchinfo="+this.searchinfo+"&page="+page)
+					.then((resp) => { this.userInfos = resp.data; })
+					.catch((resp) => { toastr.error('跳转失败'); });
+					}
+				this.curpage=page;
+				},
+				close(){
+					adduserinfo={uName:"",uSex:"",uPhone:"",uLicense:"",uRole:"",uEffectiveTime:undefined};
+				}
+			},
+			mounted() {
+				axios.get("/parking")
+					.then((resp) => { this.info = resp.data; })
+					.catch((resp) => { console.log("失败") });
+				axios.get("/parking/userInfoPage/1")
+					.then((resp) => { this.userInfos = resp.data; })
+					.catch((resp) => { console.log("失败") });
+				axios.get("/parking/userInfoPage")
+					.then((resp) => { this.page = resp.data; })
+					.catch((resp) => { console.log("失败") });
+				
+			},
+			template:`
+			<div>
+				<div class="bd-example">
+  <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="./images/ban2.jpg" class="d-block w-100 " alt="...">
+				
+				<div class="carousel-caption d-none d-md-block" style="
+    margin-bottom: 150px;"
+>
+				<div style='background-color:white;height:2px;border:none;width: 370px;margin-left: 402px;'></div>
+					<div style="font-size:70px" class="my-2">车 主 信 息</div>		
+					<div style='background-color:white;height:2px;border:none;width: 370px;margin-left: 402px;'></div>
+          <div style="font-size:20px ;" class="mt-4">DRIVER INFORMATION</div>
+					<button type="button" class="btn btn-outline-light mt-3" data-toggle="modal" data-target="#exampleModal">添加信息</button>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+	<div class="container-fluid">
+		
+		<div class="row mt-5 mb-4">
+			<div class="col-auto offset-md-8 px-0">
+			<div class="form-inline my-2  my-lg-0">
+      <input class="form-control mr-sm-2 " type="search" placeholder="名字、车牌、角色" aria-label="Search" v-model="searchinfo">
+      <button class="btn btn-outline-success my-2 my-sm-0" @click="search">查找</button>
+    </div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-2 col-auto">
+				<div class="card" style="width: 18rem;">
+  			<img src="./images/userInfo1.png" class="card-img-top" alt="...">
+  			<div class="card-body">
+    			<h5 class="card-title">车主产品</h5>
+    			<p class="card-text">源于车主，精于体验追求极致</p>
+    			<a href="#" class="btn btn-primary">了解车主产品</a>
+  			</div>
+				</div>
+			</div>
+			 <div class="col-md-8 col-auto">
+					<table class="table table-hover text-center">
+  					<thead>
+    				<tr>
+      				<th scope="col">编号</th>
+      				<th scope="col">名字</th>
+      				<th scope="col">性别</th>
+      				<th scope="col">电话</th>
+							<th scope="col">车牌号</th>
+      				<th scope="col">角色</th>
+      				<th scope="col">到期时间</th>
+							<th scope="col">操作</th>
+    				</tr>
+  					</thead>
+  					<tbody>
+    				<tr v-for="userInfo in userInfos">
+      				<th scope="row">{{userInfo.uId}}</th>
+      				<td>{{userInfo.uName}}</td>
+      				<td>{{userInfo.uSex}}</td>
+							<td>{{userInfo.uPhone}}</td>
+      				<td>{{userInfo.uLicense}}</td>
+							<td>{{userInfo.uRole}}</td>
+      				<td>{{userInfo.uEffectiveTime}}</td>
+							<td>
+								<button type="button" class="btn btn-outline-primary mr-2" data-toggle="modal" data-target="#exampleModal1" @click="getuserinfo(userInfo.uId)">修改</button>
+								<button v-if="info.aRole=='超级管理员' "type="button" class="btn btn-outline-danger"  data-toggle="modal" data-target="#exampleModal2"@click="deletetemp(userInfo.uId)" >删除</button>
+							</td>
+    				</tr>
+  					</tbody>
+					</table>
+
+					
+					<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+		<li class="page-item " v-bind:class="{ 'disabled': curpage == 1}">
+      <span class="page-link" @click="jump(curpage-1)">上一页</span>
+    </li>
+    <li class="page-item" v-for="p in page" v-bind:class="{ 'active': curpage == p}"><a class="page-link" @click="jump(p)">{{p}}</a></li>
+		<li class="page-item" v-bind:class="{ 'disabled': curpage == page}">
+      <span class="page-link" href="#" @click="jump(curpage+1)">下一页</span>
+    </li>
+  </ul>
+</nav>
+				</div>
+
+			<div class="col-md-2 col-auto">
+				<div class="card" style="width: 18rem;">
+  			<img src="./images/userInfo2.png" class="card-img-top" alt="...">
+  			<div class="card-body">
+    			<h5 class="card-title">车场平台</h5>
+    			<p class="card-text">互联网+智慧停车解决方案</p>
+    			<a href="#" class="btn btn-primary">了解车场平台</a>
+  			</div>
+				</div>
+			</div>
+
+		</div>
+		<img src="./images/foot1.png" class="img-fluid" alt="Responsive image">
+	</div>
+
+
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">添加车主的信息</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+              <div class="form-group">
+              <label for="exampleInputPassword1">名字：</label>
+              <input type="text" class="form-control"  v-model="adduserinfo.uName">
+            </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">性别：</label>
+								<select v-model="adduserinfo.uSex" class="form-control" id="exampleFormControlSelect1">
+    						<option disabled value="">请选择</option>
+    						<option>男</option>
+								<option>女</option>
+  						</select>
+							</div>
+							<div class="form-group">
+                <label for="exampleInputPassword1">电话：</label>
+                <input type="text" class="form-control"   v-model="adduserinfo.uPhone">
+              </div>
+              <div class="form-group">
+              <label for="exampleInputPassword1">车牌：</label>
+              <input type="text" class="form-control"   v-model="adduserinfo.uLicense">
+            </div>
+						<div class="form-group">
+              <label for="exampleInputPassword1">角色：</label>
+							<select v-model="adduserinfo.uRole" class="form-control" id="exampleFormControlSelect1">
+    						<option disabled value="">请选择</option>
+    						<option>会员</option>
+								<option>非会员</option>
+  						</select>
+            </div>
+						<div class="form-group" v-if="adduserinfo.uRole=='会员'">
+              <label for="exampleInputPassword1">有效期：</label>
+              <input type="text" class="form-control"   v-model="adduserinfo.uEffectiveTime">
+            </div>
+              
+              </div>
+              <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="close">关闭</button>
+              <button type="button" class="btn btn-primary"  @click="addinfo" data-dismiss="modal">提交</button>
+            </div>
+            </div>
+          </div>
+				</div>
+
+	<!-- Modal -->
+        <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">修改车主的信息</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+								<div class="form-group">
+              <label for="exampleInputPassword1">编号：</label>
+              <input type="text" class="form-control"  v-model="oneuserinfo.uId" disabled="disabled">
+            </div>
+              <div class="form-group">
+              <label for="exampleInputPassword1">名字：</label>
+              <input type="text" class="form-control"  v-model="oneuserinfo.uName">
+            </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">性别：</label>
+								<select v-model="oneuserinfo.uSex" class="form-control" id="exampleFormControlSelect1">
+    						<option disabled value="">请选择</option>
+    						<option>男</option>
+								<option>女</option>
+  						</select>
+							</div>
+							<div class="form-group">
+                <label for="exampleInputPassword1">电话：</label>
+                <input type="text" class="form-control"   v-model="oneuserinfo.uPhone">
+              </div>
+              <div class="form-group">
+              <label for="exampleInputPassword1">车牌：</label>
+              <input type="text" class="form-control"   v-model="oneuserinfo.uLicense">
+            </div>
+						<div class="form-group">
+              <label for="exampleInputPassword1">角色：</label>
+							<select v-model="oneuserinfo.uRole" class="form-control" id="exampleFormControlSelect1">
+    						<option disabled value="">请选择</option>
+    						<option>会员</option>
+								<option>非会员</option>
+  						</select>
+            </div>
+						<div class="form-group" v-if="oneuserinfo.uRole=='会员'">
+              <label for="exampleInputPassword1">有效期：</label>
+              <input type="text" class="form-control"   v-model="oneuserinfo.uEffectiveTime">
+            </div>
+              
+              </div>
+              <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" >关闭</button>
+              <button type="button" class="btn btn-primary"  @click="submit1" data-dismiss="modal">提交</button>
+            </div>
+            </div>
+          </div>
+				</div>
+	<!-- Modal -->
+<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">警告</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        你确定要删除吗?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" @click="submit2()">确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+			`
+		});
+
+		//停车记录组件
+		let parkingRecord = Vue.component('parkingRecord',{
+			data: function () {
+				return {
+					parkingRecordInfo:[],
+					curpage:1,
+					page:undefined,
+					searchinfo:'',
+					prId:undefined,
+					info:undefined,
+				}
+			},
+			methods: {
+				jump(page){
+					if(this.searchinfo==""){
+						axios.get("/parking/parkingRecordInfo/"+page)
+					.then((resp) => { this.parkingRecordInfo = resp.data;})
+					.catch((resp) => { toastr.error('跳转失败'); });
+					}else{
+						axios.get("/parking/findparkingRecord?searchinfo="+this.searchinfo+"&page="+page)
+					.then((resp) => { this.parkingRecordInfo = resp.data; })
+					.catch((resp) => { toastr.error('跳转失败'); });
+					}
+				this.curpage=page;
+				},
+				search(){
+					if(this.searchinfo==""){
+						axios.get("/parking/parkingRecordInfo/1")
+					.then((resp) => { this.parkingRecordInfo = resp.data; 	axios.get("/parking/parkingRecordPage")
+					.then((resp) => { this.page = resp.data; })
+					.catch((resp) => { console.log("失败") });})
+					.catch((resp) => { console.log("失败") });
+					}else{
+						axios.get("/parking/findparkingRecord?searchinfo="+this.searchinfo+"&page="+1)
+					.then((resp) => { this.parkingRecordInfo = resp.data; 	axios.get("/parking/parkingRecordPageBC/"+this.searchinfo)
+					.then((resp) => { this.page = resp.data; })
+					.catch((resp) => { console.log("失败") });})
+					.catch((resp) => { console.log("失败") });
+					}
+					this.curpage=1;
+				},
+				deletetemp(id){
+					this.prId = id;
+				},
+				submit(){
+					axios.delete("/parking/parkingRecordInfo/"+this.prId)
+					.then((resp) => { if (resp.data) { toastr.success('删除信息成功'); this.curpage=1;this.searchinfo=""; 
+					axios.get("/parking/parkingRecordPage")
+					.then((resp) => { this.page = resp.data; })
+					.catch((resp) => { console.log("失败") });
+					axios.get("/parking/parkingRecordInfo/1")
+					.then((resp) => { this.parkingRecordInfo = resp.data; })
+					.catch((resp) => { console.log("失败") })}
+								else { toastr.error('删除信息错误');}  })
+					.catch((resp) => { toastr.error('删除信息错误'); })
+				}
+			},
+			mounted() {
+				axios.get("/parking")
+					.then((resp) => { this.info = resp.data; })
+					.catch((resp) => { console.log("失败") });
+				axios.get("/parking/parkingRecordInfo/1")
+					.then((resp) => { this.parkingRecordInfo = resp.data; })
+					.catch((resp) => { console.log("失败") });
+				axios.get("/parking/parkingRecordPage")
+					.then((resp) => { this.page = resp.data; })
+					.catch((resp) => { console.log("失败") });
+					
+			},
+			template:`
+			<div>
+				<div class="bd-example">
+  <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="./images/ban4.jpg" class="d-block w-100 " alt="...">
+				
+				<div class="carousel-caption d-none d-md-block" style="
+    margin-bottom: 150px;"
+>
+				<div style='background-color:white;height:2px;border:none;width: 370px;margin-left: 402px;'></div>
+					<div style="font-size:70px" class="my-2">停 车 记 录</div>		
+					<div style='background-color:white;height:2px;border:none;width: 370px;margin-left: 402px;'></div>
+          <div style="font-size:20px ;" class="mt-4">PARKING RECORD</div>
+					<button type="button" class="btn btn-outline-light mt-3" data-toggle="modal" data-target="#exampleModalScrollable">查询须知</button>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+	<div class="container-fluid">
+		
+		<div class="row mt-5 mb-4">
+			<div class="col-auto offset-md-8 px-0">
+			<div class="form-inline my-2  my-lg-0">
+      <input style="width: 206px;" class="form-control mr-sm-2 " type="search" placeholder="车牌、角色、状态、时间" aria-label="Search" v-model="searchinfo">
+      <button class="btn btn-outline-success my-2 my-sm-0" @click="search">查找</button>
+    </div>
+			</div>
+		</div>
+		<div class="row">
+			 <div class="col-md-12 col-auto">
+					<table class="table table-hover text-center">
+  					<thead>
+    				<tr>
+      				<th scope="col">编号</th>
+							<th scope="col">地点</th>
+      				<th scope="col">名字</th>
+      				<th scope="col">车牌号</th>
+      				<th scope="col">驶入时间</th>
+							<th scope="col">驶出时间</th>
+							<th scope="col">角色</th>
+      				<th scope="col">金额</th>
+      				<th scope="col">状态</th>
+							<th v-if="info.aRole=='超级管理员'" scope="col">操作</th>
+    				</tr>
+  					</thead>
+  					<tbody>
+    				<tr v-for="pr in parkingRecordInfo">
+      				<th scope="row">{{pr.prId}}</th>
+      				<td>{{pr.pAddress}}</td>
+      				<td>{{pr.uName}}</td>
+							<td>{{pr.uLicense}}</td>
+      				<td>{{pr.prStartTime}}</td>
+							<td>{{pr.prEndTime}}</td>
+      				<td>{{pr.uRole}}</td>
+							<td>{{pr.prPrice}}</td>
+      				<td>{{pr.prState}}</td>
+							<td v-if="info.aRole=='超级管理员'"><button type="button" class="btn btn-outline-danger"  data-toggle="modal" data-target="#exampleModal2"@click="deletetemp(pr.prId)" >删除</button></td>
+    				</tr>
+  					</tbody>
+					</table>
+
+					
+					<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+		<li class="page-item " v-bind:class="{ 'disabled': curpage == 1}">
+      <span class="page-link" @click="jump(curpage-1)">上一页</span>
+    </li>
+    <li class="page-item" v-for="p in page" v-bind:class="{ 'active': curpage == p}"><a class="page-link" @click="jump(p)">{{p}}</a></li>
+		<li class="page-item" v-bind:class="{ 'disabled': curpage == page}">
+      <span class="page-link" href="#" @click="jump(curpage+1)">下一页</span>
+    </li>
+  </ul>
+</nav>
+				</div>
+
+		
+
+		</div>
+		<img src="./images/foot1.png" class="img-fluid" alt="Responsive image">
+	</div>
+	<!-- Modal -->
+<div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalScrollableTitle">查询须知</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ul>
+				<li>模糊车牌查询</li>
+				<li>角色查询</li>
+				<li>状态查询</li>
+				<li>驶入时间查询：如要查询输入日期以后的停车记录(eg:日期)，如要查询范围内日期的停车记录(eg:日期~日期)</li>
+				<li>驶出时间查询：如要查询输入日期以后的停车记录(eg:!日期)，如要查询范围内日期的停车记录(eg:日期!日期)</li>
+				</ul>
+				<p class="lead">PS:符号为英文字符</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">警告</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        你确定要删除吗?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" @click="submit()">确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</div>`
+		});
+
+		//模拟停车组件
+		let simulatedParking = Vue.component('simulatedParking',{
+			data: function () {
+				return {
+					license:"",
+					temp:false,
+					temp1:false,
+					outinfo:{},
+				}
+			},
+			methods: {
+				driverin(){
+					var result = false;
+      if (this.license.length == 7|this.license.length == 8){
+        var express = /^(WJ[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼]{1})|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼消军A-Z]{1}[A-Z]{1})[A-Z0-9]{4}[A-Z0-9挂学港澳领]{1}$/;
+        result = express.test(this.license);
+				console.log(result);
+				if (result){
+					this.temp1=false;
+					axios.get("/parking/driverin/"+this.license)
+					.then((resp) => { if(resp.data){
+						toastr.success(this.license+'驶入成功');
+					this.temp=true;
+					}else{
+						toastr.error('车位已满');
+					}
+				 })
+					.catch((resp) => { toastr.error('驶入失败'); });
+				}else{
+					toastr.error('请输入正确的车牌');
+				}
+      }else{
+				toastr.error('请输入正确的车牌');
+			}
+				},
+				driverout(){
+					var result = false;
+      if (this.license.length == 7|this.license.length == 8){
+        var express = /^(WJ[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼]{1})|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼消军A-Z]{1}[A-Z]{1})[A-Z0-9]{4}[A-Z0-9挂学港澳领]{1}$/;
+        result = express.test(this.license);
+				console.log(result);
+				if (result){
+					axios.get("/parking/driverout/"+this.license)
+					.then((resp) => { if(resp.data.judge){
+						toastr.success(this.license+'驶出成功');
+						this.temp=false;
+						this.temp1=true;
+						this.outinfo=resp.data;
+					}else{
+						toastr.error(this.license+'驶出失败');
+					} })
+					.catch((resp) => { toastr.error(this.license+'驶出失败'); });
+				}else{
+					toastr.error('请输入正确的车牌');
+				}
+      }else{
+				toastr.error('请输入正确的车牌');
+			}			
+				}
+			},
+			mounted() {
+			
+			},
+			template:`
+			<div class="container-fluid">
+				<div class="row">
+			<div class="col-md-4 offset-md-4" >
+				<transition name="custom-classes-transition"enter-active-class="animated fadeInLeft"leave-active-class="animated fadeOutRight"><img v-if="!temp"src="./images/car1.png" class="img-fluid" alt="Responsive image"></transition>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4 offset-md-4" >
+				<transition name="custom-classes-transition"enter-active-class="animated fadeInLeft"leave-active-class="animated fadeOutRight"><img v-if="temp"src="./images/car1.png" class="img-fluid" alt="Responsive image"></transition>
+			</div>
+		</div>
+	
+		<div class="row my-5" >
+			<div class="col-5 offset-md-5">
+			<div class="form-inline my-2  my-lg-0">
+      <input class="form-control mr-sm-2 " type="text" placeholder="车牌"  v-model="license">
+      <button class="btn btn-outline-success mr-2 my-sm-1" @click="driverin">驶入</button>
+			<button class="btn btn-outline-success  my-sm-1" @click="driverout">驶出</button>
+    </div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-4 offset-md-4" >
+				<ul class="pl-md-5 mt-5" v-if="temp1" >
+				<img v-if="temp1" src="./images/type2.png" width="60" height="60" alt="" class="rounded mx-auto d-block">
+					<hr class="featurette-divider ">
+					<li class="list-group-item font-weight-bold " >
+					<img v-if="temp1"src="./images/content_5.png" width="30" height="30" class="mr-2"/>车牌号：{{outinfo.license}}</li>
+          <li class="list-group-item font-weight-bold " >
+					<img v-if="temp1"src="./images/type3.png" width="30" height="30" class="mr-2"/>驶入时间：{{outinfo.startTime}}</li>
+          <li class="list-group-item font-weight-bold "">
+					<img v-if="temp1"src="./images/type3.png" width="30" height="30" class="mr-2"/>驶出时间：{{outinfo.endTime}}</li>
+          <li class="list-group-item font-weight-bold ">
+					<img v-if="temp1"src="./images/type4.png" width="30" height="30" class="mr-2"/>停车时间：{{outinfo.time}}</li>
+					<li class="list-group-item font-weight-bold ">
+					<img v-if="temp1"src="./images/type1.png" width="30" height="30" class="mr-2"/>花费：{{outinfo.price}}</li>
+        </ul>
+  </div>
+</div>
+
+		<img src="./images/foot1.png" class="img-fluid" alt="Responsive image">
+	</div>
+		`
+		});
+		
+//管理员信息组件
+let adminInfo = Vue.component('adminInfo',{
+	data: function () {
+				return {
+					adminInfos:[],
+					oneadmininfo:{},
+					id:undefined,
+					addadmininfo:{}
+				}
+			},
+			methods: {
+				getadmininfo(id){
+					axios.get("/parking/adminInfo/"+id)
+					.then((resp) => { this.oneadmininfo = resp.data; })
+					.catch((resp) => { console.log("失败") })
+				},
+				submit1(){
+					axios.put("/parking/changeAdminInfo1",this.oneadmininfo)
+					.then((resp) => { if (resp.data) { toastr.success('修改信息成功');
+					axios.get("/parking/adminInfo")
+					.then((resp) => { this.adminInfos = resp.data; })
+					.catch((resp) => { console.log("失败") });
+					}})
+					.catch((resp) => { toastr.error('修改信息失败'); })
+				},
+				deletetemp(id){
+					this.id=id;
+				},
+				submit2(){
+					axios.delete("/parking/adminInfo/"+this.id)
+					.then((resp) => { if (resp.data) { toastr.success('删除信息成功');
+					axios.get("/parking/adminInfo")
+					.then((resp) => { this.adminInfos = resp.data; })
+					.catch((resp) => { console.log("失败") });
+					}
+					})
+					.catch((resp) => { toastr.error('删除信息失败'); });
+				},
+				addinfo(){
+					axios.post("/parking/addAdminInfo/",this.addadmininfo)
+					.then((resp) => { if (resp.data) { toastr.success('添加信息成功');
+					axios.get("/parking/adminInfo")
+					.then((resp) => { this.adminInfos = resp.data; })
+					.catch((resp) => { console.log("失败") });
+					}
+					})
+					.catch((resp) => { toastr.error('添加信息失败'); })
+				},
+				close(){
+					this.addadmininfo={};
+				}
+			},
+			mounted() {
+				axios.get("/parking/adminInfo")
+					.then((resp) => { this.adminInfos = resp.data; })
+					.catch((resp) => { console.log("失败") });
+			
+			},
+			template:`	<div>
+				<div class="bd-example">
+  <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="./images/ban5.jpg" class="d-block w-100 " alt="...">
+				
+				<div class="carousel-caption d-none d-md-block" style="
+    margin-bottom: 150px;"
+>
+				<div style='background-color:white;height:2px;border:none;width: 450px;margin-left: 360px;'></div>
+					<div style="font-size:70px" class="my-2">管 理 员 信 息</div>		
+					<div style='background-color:white;height:2px;border:none;width: 450px;margin-left: 360px;'></div>
+          <div style="font-size:20px ;" class="mt-4">ADMINISTRATOR INFORMATION</div>
+					<button type="button" class="btn btn-outline-light mt-3" data-toggle="modal" data-target="#exampleModal">添加信息</button>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+	<div class="container-fluid  mt-5">
+		
+		
+		<div class="row">
+			<div class="col-md-2 col-auto">
+				<div class="card" style="width: 18rem;">
+  			<img src="./images/userInfo1.png" class="card-img-top" alt="...">
+  			<div class="card-body">
+    			<h5 class="card-title">车主产品</h5>
+    			<p class="card-text">源于车主，精于体验追求极致</p>
+    			<a href="#" class="btn btn-primary">了解车主产品</a>
+  			</div>
+				</div>
+			</div>
+			 <div class="col-md-8 col-auto">
+					<table class="table table-hover text-center">
+  					<thead>
+    				<tr>
+      				<th scope="col">账号</th>
+      				<th scope="col">名字</th>
+      				<th scope="col">性别</th>
+      				<th scope="col">电话</th>
+      				<th scope="col">密码</th>
+							<th scope="col">操作</th>
+    				</tr>
+  					</thead>
+  					<tbody>
+    				<tr v-for="adminInfo in adminInfos">
+      				<th scope="row">{{adminInfo.aId}}</th>
+      				<td>{{adminInfo.aName}}</td>
+      				<td>{{adminInfo.aSex}}</td>
+							<td>{{adminInfo.aPhone}}</td>
+      				<td>{{adminInfo.aPassword}}</td>
+							<td>
+								<button type="button" class="btn btn-outline-primary mr-2" data-toggle="modal" data-target="#exampleModal1" @click="getadmininfo(adminInfo.aId)">修改</button>
+								<button type="button" class="btn btn-outline-danger"  data-toggle="modal" data-target="#exampleModal2"@click="deletetemp(adminInfo.aId)" >删除</button>
+							</td>
+    				</tr>
+  					</tbody>
+					</table>
+
+					
+					
+				</div>
+
+			<div class="col-md-2 col-auto">
+				<div class="card" style="width: 18rem;">
+  			<img src="./images/userInfo2.png" class="card-img-top" alt="...">
+  			<div class="card-body">
+    			<h5 class="card-title">车场平台</h5>
+    			<p class="card-text">互联网+智慧停车解决方案</p>
+    			<a href="#" class="btn btn-primary">了解车场平台</a>
+  			</div>
+				</div>
+			</div>
+
+		</div>
+		<img src="./images/foot1.png" class="img-fluid" alt="Responsive image">
+	</div>
+
+
+	<!-- Modal -->
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">添加管理员信息</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+								<div class="form-group">
+              <label for="exampleInputPassword1">账号：</label>
+              <input type="text" class="form-control"  v-model="addadmininfo.aId">
+            </div>
+              <div class="form-group">
+              <label for="exampleInputPassword1">名字：</label>
+              <input type="text" class="form-control"  v-model="addadmininfo.aName">
+            </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">性别：</label>
+								<select v-model="addadmininfo.aSex" class="form-control" id="exampleFormControlSelect1">
+    						<option disabled value="">请选择</option>
+    						<option>男</option>
+								<option>女</option>
+  						</select>
+							</div>
+							<div class="form-group">
+                <label for="exampleInputPassword1">电话：</label>
+                <input type="text" class="form-control"   v-model="addadmininfo.aPhone">
+              </div>
+              <div class="form-group">
+              <label for="exampleInputPassword1">密码：</label>
+              <input type="text" class="form-control"   v-model="addadmininfo.aPassword">
+            </div>
+              
+              </div>
+              <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="close">关闭</button>
+              <button type="button" class="btn btn-primary"  @click="addinfo" data-dismiss="modal">提交</button>
+            </div>
+            </div>
+          </div>
+				</div>
+
+	<!-- Modal -->
+        <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">修改管理员信息</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+								<div class="form-group">
+              <label for="exampleInputPassword1">编号：</label>
+              <input type="text" class="form-control"  v-model="oneadmininfo.aId" disabled="disabled">
+            </div>
+              <div class="form-group">
+              <label for="exampleInputPassword1">名字：</label>
+              <input type="text" class="form-control"  v-model="oneadmininfo.aName">
+            </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">性别：</label>
+								<select v-model="oneadmininfo.aSex" class="form-control" id="exampleFormControlSelect1">
+    						<option disabled value="">请选择</option>
+    						<option>男</option>
+								<option>女</option>
+  						</select>
+							</div>
+							<div class="form-group">
+                <label for="exampleInputPassword1">电话：</label>
+                <input type="text" class="form-control"   v-model="oneadmininfo.aPhone">
+              </div>
+              <div class="form-group">
+              <label for="exampleInputPassword1">密码：</label>
+              <input type="text" class="form-control"   v-model="oneadmininfo.aPassword">
+            </div>
+              
+              </div>
+              <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" >关闭</button>
+              <button type="button" class="btn btn-primary"  @click="submit1" data-dismiss="modal">提交</button>
+            </div>
+            </div>
+          </div>
+				</div>
+	<!-- Modal -->
+<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">警告</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        你确定要删除吗?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" @click="submit2()">确定</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</div>`
+
+})
+
+//数据分析组件
+let dataAnalysis = Vue.component('dataAnalysis',{
+	data: function () {
+				return {
+					start:"",
+					end:"",
+					echartsDate:{},
+					echartsDate1:[],
+				}
+			},
+			methods: {
+				submit(){
+					axios.get("/parking/parkingRecordByEcharts?start="+this.start+"&end="+this.end)
+					.then((resp) => {this.echartsDate=resp.data; 
+
+				   // 基于准备好的dom，初始化echarts实例
+					 var myChart = echarts.init(document.getElementById('echarts1'));
+
+// 指定图表的配置项和数据
+option = {
+title : {
+text: '停车记录',
+subtext: '机密'
+},
+tooltip : {
+trigger: 'axis'
+},
+legend: {
+data:['会员','非会员']
+},
+toolbox: {
+show : true,
+feature : {
+		dataView : {show: true, readOnly: false},
+		magicType : {show: true, type: ['line', 'bar']},
+		restore : {show: true},
+		saveAsImage : {show: true}
+}
+},
+calculable : true,
+xAxis : [
+{
+		type : 'category',
+		data : this.echartsDate.xName
+}
+],
+yAxis : [
+{
+		type : 'value'
+}
+],
+series : [
+{
+		name:'会员',
+		type:'bar',
+		data:this.echartsDate.member,
+		markPoint : {
+				data : [
+						{type : 'max', name: '最大值'},
+						{type : 'min', name: '最小值'}
+				]
+		},
+		markLine : {
+				data : [
+						{type : 'average', name: '平均值'}
+				]
+		}
+},
+{
+		name:'非会员',
+		type:'bar',
+		data:this.echartsDate.nonmember,
+		markPoint : {
+				data : [
+						{type : 'max', name: '最大值'},
+						{type : 'min', name: '最小值'}
+				]
+		},
+		markLine : {
+				data : [
+						{type : 'average', name : '平均值'}
+				]
+		}
+}
+]
+};
+
+
+// 使用刚指定的配置项和数据显示图表。
+myChart.setOption(option);
+
+					})
+					.catch((resp) => { console.log("失败") });
+					
+				}
+			},
+			mounted() {
+				var date = new Date();
+  			var seperator1 = "-";
+  			var year = date.getFullYear();
+  			var month = date.getMonth() + 1;
+  			var strDate = date.getDate();
+  			if (month >= 1 && month <= 9) {
+   				 month = "0" + month;
+  			}
+  			if (strDate >= 0 && strDate <= 9) {
+    			strDate = "0" + strDate;
+  			}
+  			this.end = year + seperator1 + month + seperator1 + strDate;
+				var today = new Date();
+　　var targetday_milliseconds=today.getTime() + 1000*60*60*24*(-3);
+　　today.setTime(targetday_milliseconds); 
+　　var tYear = today.getFullYear();
+　　var tMonth = today.getMonth()+1;
+　　var tDate = today.getDate();
+		if (tMonth >= 1 && tMonth <= 9) {
+			tMonth = "0" + tMonth;
+  			}
+  			if (tDate >= 0 && tDate <= 9) {
+    			tDate = "0" + tDate;
+  			}
+			this.start = tYear+"-"+tMonth+"-"+tDate;
+			this.submit();
+			
+			axios.get("/parking/userRoleByEcharts")
+					.then((resp) => { this.echartsDates = resp.data; 
+					        // 基于准备好的dom，初始化echarts实例
+									var myChart = echarts.init(document.getElementById('echarts2'));
+
+// 指定图表的配置项和数据
+option = {
+title : {
+text: '车主角色占比',
+subtext: '机密',
+x:'center'
+},
+tooltip : {
+trigger: 'item',
+formatter: "{a} <br/>{b} : {c} ({d}%)"
+},
+legend: {
+x : 'center',
+y : 'bottom',
+data:['非会员','会员','特殊']
+},
+toolbox: {
+show : true,
+feature : {
+		mark : {show: true},
+		dataView : {show: true, readOnly: false},
+		magicType : {
+				show: true,
+				type: ['pie', 'funnel']
+		},
+		restore : {show: true},
+		saveAsImage : {show: true}
+}
+},
+calculable : true,
+series : [
+{
+		name:'半径模式',
+		type:'pie',
+		radius : [20, 110],
+		center : ['25%', '50%'],
+		roseType : 'radius',
+		label: {
+				normal: {
+						show: false
+				},
+				emphasis: {
+						show: true
+				}
+		},
+		lableLine: {
+				normal: {
+						show: false
+				},
+				emphasis: {
+						show: true
+				}
+		},
+		data:this.echartsDates
+},
+{
+		name:'面积模式',
+		type:'pie',
+		radius : [30, 110],
+		center : ['75%', '50%'],
+		roseType : 'area',
+		data:this.echartsDates
+}
+]
+};
+
+
+// 使用刚指定的配置项和数据显示图表。
+myChart.setOption(option);
+					})
+					.catch((resp) => { console.log("失败") });
+			
+
+			},
+			template:`
+			<div class="container-fluid">
+				<div class="row mt-5">
+				<div class="col-5 offset-md-4">
+					<h1 class="ml-md-5 pl-md-5">停车记录可视化分析 </h1>
+					<label class="mb-5">开始时间：</label><input type="date" v-model="start">
+					<label class="ml-3">结束时间：</label><input type="date" v-model="end">
+				<button type="button" class="btn btn-primary"  @click="submit" data-dismiss="modal">提交</button>
+				<div  id="echarts1" style="width: 600px;height:400px;" class="mb-5"></div>
+				<h1 class="ml-md-5 pl-md-5">车主角色可视化分析 </h1>
+			  </div>	
+				</div>
+				<div class="row mt-5">
+				<div class="col-4 offset-md-3">
+				<div  id="echarts2" style="width: 800px;height:400px;" class="mb-5"></div>
+			</div>	
+				</div>
+			</div>
+			`
+
+})
+
+		//定义路由路径
+		const routes = [
+			//首页
+			{ path: '*', component: main },
+
+			//个人信息
+			{ path: '/personInfo', component: personInfo },
+
+			//停车场信息
+			{ path: '/parkingInfo', component: parkingInfo },
+
+			//车主信息
+			{ path: '/driverInfo', component: driverInfo },
+
+			//停车记录
+			{ path: '/parkingRecord', component: parkingRecord },
+
+			//模拟停车
+			{ path: '/simulatedParking', component: simulatedParking },
+
+			//管理员信息
+			{ path: '/adminInfo', component: adminInfo },
+
+			//数据分析
+			{ path: '/dataAnalysis', component: dataAnalysis },
+		];
+
+		//加载路由
+		const router = new VueRouter({
+			routes
+		});
+
+		//启动路由
+		const app = new Vue({
+			el: '#parking',
+			data: {
+				info: {},
+			},
+			methods: {
+			},
+			mounted() {
+				axios.get("/parking")
+					.then((resp) => { this.info = resp.data; })
+					.catch((resp) => { console.log("失败") })
+			},
+			router
+		});
+	</script>
+
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+</body>
+
+</html>
